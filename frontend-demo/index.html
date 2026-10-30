@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChurnIQ — Customer Churn Prediction</title>
+<style>
+:root{
+ --bg:#f4fbf9;--surface:#ffffff;--ink:#26343a;--muted:#829097;--line:#e4eeee;
+ --teal:#3f8f89;--teal2:#79bdb3;--aqua:#dff4ef;--sky:#e5f0fa;--coral:#f8ddd7;
+ --gold:#f4e8bf;--plum:#eadff0;--shadow:0 16px 40px rgba(45,74,75,.08)
+}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 5% 0,#e2f3ee,transparent 28%),radial-gradient(circle at 100% 0,#e8eef9,transparent 27%),var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer}.app{display:flex;min-height:100vh}.side{width:225px;background:#f0f8f6cc;border-right:1px solid var(--line);padding:22px 15px;position:fixed;inset:0 auto 0 0;backdrop-filter:blur(10px)}
+.logo{display:flex;gap:10px;align-items:center;margin-bottom:30px}.logoMark{width:42px;height:42px;border-radius:14px;background:#376e6a;color:#fff;display:grid;place-items:center;font-weight:900}.logo b{font-size:16px}.logo small{display:block;font-size:8px;color:var(--muted);letter-spacing:1.2px;margin-top:3px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#758287;text-align:left;padding:12px;border-radius:12px;font-size:10px;font-weight:800}.nav button:hover,.nav button.active{background:#fff;color:#34736e;box-shadow:0 8px 22px rgba(52,115,110,.08)}.nav span{display:inline-block;width:20px;text-align:center;margin-right:6px}
+.ai-mini{margin-top:28px;background:linear-gradient(145deg,#dcefeb,#e9f0fa);padding:15px;border-radius:17px}.ai-dot{width:31px;height:31px;border-radius:10px;background:#fff;display:grid;place-items:center;color:#3f8f89;margin-bottom:9px}.ai-mini b{font-size:10px}.ai-mini p{font-size:8px;line-height:1.5;color:#78858a}.online{font-size:8px;color:#4f877d}.online i{display:inline-block;width:6px;height:6px;background:#63ae98;border-radius:50%;margin-right:4px}
+.profile{position:absolute;bottom:17px;left:17px;right:17px;border-top:1px solid #dbe6e4;padding-top:13px;display:flex;gap:9px;align-items:center}.avatar{width:33px;height:33px;border-radius:50%;background:#d4ebe6;display:grid;place-items:center;color:#34736e;font-size:9px;font-weight:800}.profile b{font-size:9px}.profile small{display:block;color:#899398;font-size:8px}
+.main{margin-left:225px;width:calc(100% - 225px);padding:24px 34px 48px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:23px}.crumb{font-size:8px;color:#9aa5a9;letter-spacing:1.7px;font-weight:900}.top h1{font-size:25px;margin:6px 0 2px;letter-spacing:-.7px}.top p{font-size:10px;color:var(--muted);margin:0}.topActions{display:flex;gap:8px;align-items:center}.search{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:#9ba5a9}.search input{border:0;outline:0;width:155px;font-size:10px}.btn{border:0;border-radius:11px;padding:11px 14px;font-size:9px;font-weight:900}.teal{background:#376e6a;color:#fff}.white{background:#fff;border:1px solid var(--line);color:#536269}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:15px;margin-bottom:15px}.welcome{background:linear-gradient(130deg,#3f8f89,#68aaa1);color:#fff;border-radius:22px;padding:26px 29px;min-height:175px;position:relative;overflow:hidden}.welcome:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;border:35px solid rgba(255,255,255,.09);right:-70px;top:-100px}.welcome .tag{font-size:8px;letter-spacing:1.5px;font-weight:900;color:#d9f2ed}.welcome h2{font-size:25px;max-width:480px;margin:8px 0}.welcome p{font-size:10px;line-height:1.6;max-width:510px;color:#e5f4f1}.quick{background:#fff;border:1px solid var(--line);border-radius:22px;padding:21px}.quick h3{font-size:12px;margin:0 0 13px}.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quick button{border:0;border-radius:14px;padding:14px 10px;text-align:left;background:#f4faf9;color:#46615f;font-size:9px;font-weight:800}.quick button:nth-child(2){background:#f2f6fb}.quick button:nth-child(3){background:#fff5f1}.quick button:nth-child(4){background:#f7f1f8}.quick button:hover{transform:translateY(-2px);box-shadow:0 8px 20px #45615d12}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:15px}.metric{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;position:relative;overflow:hidden}.metric:nth-child(1){background:#e3f3ef}.metric:nth-child(2){background:#f8e2de}.metric:nth-child(3){background:#e7f0fa}.metric:nth-child(4){background:#f0e6f4}.metric label{font-size:8px;color:#6f7d81;font-weight:700}.metric strong{display:block;font-size:24px;margin:9px 0 2px}.metric small{font-size:8px;color:#859095}
+.grid{display:grid;grid-template-columns:1.45fr .85fr;gap:15px;margin-bottom:15px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:19px;box-shadow:var(--shadow)}.head{display:flex;justify-content:space-between;align-items:flex-start}.head h3{font-size:12px;margin:0 0 4px}.head p{font-size:8px;color:#98a1a5;margin:0}.select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px;font-size:8px;color:#657277}
+.chart{height:210px;margin-top:10px}.chart svg{width:100%;height:100%}.legend{font-size:8px;color:#899397}.legend i{display:inline-block;width:7px;height:7px;background:#4e9992;border-radius:50%;margin-right:5px}
+.insight{background:linear-gradient(145deg,#f4f9fd,#edf7f4)}.score{display:flex;align-items:center;gap:16px;margin:18px 0}.circle{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4f9891 0 86.7%,#dfeaea 86.7%);position:relative}.circle:after{content:"";position:absolute;width:70px;height:70px;border-radius:50%;background:#fff}.circle b{position:relative;z-index:1;font-size:18px}.scoreText b{font-size:11px}.scoreText p{font-size:8px;color:#8a9599;line-height:1.5}.factor{margin-top:13px}.factorRow{font-size:8px;color:#6f7c81;margin-bottom:10px}.factorBar{height:7px;background:#e8eeee;border-radius:10px;margin-top:5px;overflow:hidden}.factorBar span{display:block;height:100%;background:#78b9b0;border-radius:10px}
+.tableCard{margin-bottom:15px}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse}th{font-size:7px;color:#a1aaad;text-align:left;text-transform:uppercase;letter-spacing:1px;padding:10px 7px;border-bottom:1px solid var(--line)}td{font-size:9px;padding:12px 7px;border-bottom:1px solid #f0f3f3}.pill{font-size:7px;font-weight:900;padding:5px 8px;border-radius:20px}.pill.high{background:#f8ddd7;color:#aa655b}.pill.medium{background:#f4e8bf;color:#947632}.pill.low{background:#dff4ef;color:#4e877e}
+.page{display:none}.page.active{display:block}.section{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.section h2{font-size:25px;margin:6px 0 3px}.section p{font-size:10px;color:var(--muted);margin:0}.formCard{max-width:900px}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form label{font-size:8px;color:#748085;font-weight:700}.form input,.form select{display:block;width:100%;margin-top:6px;border:1px solid var(--line);border-radius:11px;padding:11px;background:#fbfdfd;outline:0;font-size:10px}.result{margin-top:14px;padding:18px;border-radius:17px}.customers{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.customer{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px}.customerTop{display:flex;gap:10px;align-items:center}.avatar2{width:40px;height:40px;border-radius:13px;background:#e5f0fa;display:grid;place-items:center;color:#547895;font-size:9px;font-weight:900}.customer h4{margin:0;font-size:10px}.customer small{font-size:7px;color:#9aa2a5}.customer hr{border:0;border-top:1px solid var(--line);margin:14px 0}.customerFoot{display:flex;justify-content:space-between;font-size:7px;color:#929b9e}.customerFoot b{display:block;color:#4f5b60;font-size:9px;margin-top:4px}.chatLayout{display:grid;grid-template-columns:1fr 320px;gap:15px}.chat{height:590px;display:flex;flex-direction:column;padding:0;overflow:hidden}.chatHead{padding:18px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#edf8f5,#f3f7fc);display:flex;align-items:center;gap:10px}.bot{width:39px;height:39px;border-radius:13px;background:#3f8f89;color:#fff;display:grid;place-items:center;font-weight:900}.chatHead b{font-size:11px}.chatHead small{display:block;font-size:7px;color:#6a9991;margin-top:3px}.messages{flex:1;padding:17px;overflow:auto;background:#fbfdfd}.msg{max-width:78%;padding:11px 13px;border-radius:14px;margin-bottom:10px;font-size:9px;line-height:1.5}.botMsg{background:#e7f4f1;border-top-left-radius:4px}.userMsg{background:#e8eef7;margin-left:auto;border-top-right-radius:4px}.chatInput{display:flex;gap:7px;padding:12px;border-top:1px solid var(--line)}.chatInput input{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px;outline:0;font-size:9px}.chatInput button{width:42px;border:0;border-radius:11px;background:#3f8f89;color:#fff}.suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 17px 10px}.suggestions button{border:1px solid #dce9e7;background:#fff;border-radius:20px;padding:7px 9px;font-size:7px;color:#4b7772}.sideInfo .card{margin-bottom:13px}.sideInfo h3{font-size:11px}.sideInfo p,.sideInfo li{font-size:8px;color:#879195;line-height:1.6}.modelTable td,.modelTable th{padding:12px 8px}
+.modalbg{display:none;position:fixed;inset:0;background:#26343a44;backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:20}.modalbg.show{display:flex}.modal{width:min(530px,92%);background:#fff;border-radius:22px;padding:25px;position:relative;box-shadow:0 25px 70px #26343a33}.close{position:absolute;right:15px;top:13px;border:0;background:#eef4f3;border-radius:50%;width:29px;height:29px}.modal h2{font-size:23px;margin:6px 0}.modal p{font-size:9px;color:#899398;line-height:1.6}.toast{position:fixed;right:23px;bottom:22px;background:#376e6a;color:#fff;padding:12px 15px;border-radius:12px;font-size:9px;opacity:0;transform:translateY(15px);transition:.25s;z-index:30}.toast.show{opacity:1;transform:none}
+@media(max-width:1050px){.side{width:200px}.main{margin-left:200px;width:calc(100% - 200px);padding:24px}.metrics{grid-template-columns:repeat(2,1fr)}.hero,.grid,.chatLayout{grid-template-columns:1fr}.customers{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.app{display:block}.side{position:static;width:100%;height:auto}.profile,.ai-mini{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.main{margin:0;width:100%;padding:17px 12px}.top{display:block}.topActions{margin-top:12px}.welcome{min-height:150px}.metrics,.customers,.form{grid-template-columns:1fr}.chat{height:540px}}
+
+/* DARK ACCENT EDITION — light pastel base + rich dark sections */
+:root{
+ --dark:#18363A;
+ --dark2:#23484B;
+ --dark3:#315B5D;
+ --darkText:#EAF7F4;
+}
+.welcome{
+ background:linear-gradient(135deg,#18363A 0%,#23484B 58%,#315B5D 100%) !important;
+ box-shadow:0 18px 38px rgba(24,54,58,.18);
+}
+.welcome .tag{color:#BFE6DE !important}
+.welcome p{color:#D8ECE8 !important}
+.welcome .white{background:#EAF7F4 !important;color:#23484B !important;border-color:transparent}
+.quick h3{color:#18363A}
+.metrics .metric:first-child{border-top:3px solid #315B5D}
+.card.insight{
+ background:linear-gradient(145deg,#18363A,#23484B) !important;
+ color:#EAF7F4;
+}
+.card.insight .head h3,.card.insight .head p,
+.card.insight .scoreText b,.card.insight .scoreText p,
+.card.insight .factorRow{color:#EAF7F4 !important}
+.card.insight .factorBar{background:#36585A}
+.card.insight .factorBar span{background:#9DD4CA}
+.card.insight .pill.low{background:#DDF4ED;color:#326B61}
+.section .crumb{color:#6F8C90}
+#models .card{
+ border-top:5px solid #18363A;
+}
+#models .modelTable tbody tr:last-child{
+ background:#EEF8F5;
+}
+#copilot .chatHead{
+ background:linear-gradient(90deg,#18363A,#315B5D) !important;
+ color:#fff;
+}
+#copilot .chatHead b,#copilot .chatHead small{color:#fff !important}
+#copilot .bot{background:#EAF7F4 !important;color:#23484B !important}
+#copilot .sideInfo .card:first-child{
+ background:#18363A !important;
+ color:#EAF7F4;
+}
+#copilot .sideInfo .card:first-child p,
+#copilot .sideInfo .card:first-child li{color:#C9DFDC !important}
+#copilot .sideInfo .card:first-child h3{color:#fff}
+#analytics .metric:nth-child(4){
+ background:#18363A !important;color:#fff;
+}
+#analytics .metric:nth-child(4) label,
+#analytics .metric:nth-child(4) small{color:#CBE3E0 !important}
+#analytics .metric:nth-child(4) strong{color:#fff}
+.nav button.active{
+ border-left:3px solid #315B5D;
+}
+.ai-mini{
+ background:linear-gradient(145deg,#18363A,#315B5D) !important;
+ color:#fff;
+}
+.ai-mini b{color:#fff}
+.ai-mini p{color:#C8DFDC}
+.ai-mini .ai-dot{color:#23484B}
+.ai-mini .online{color:#BFE6DE}
+.ai-mini .online i{background:#9DD4CA}
+
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#fff4d6;color:#654b12;border-bottom:1px solid #ead39b;padding:10px 18px;font:600 13px/1.4 Arial,sans-serif;text-align:center;">
+  PROTOTYPE NOTICE: Dashboard KPIs, customer counts, model scores and predictions on this page are illustrative demo values. They are not results from the trained ML pipeline.
+</div>
+<div class="app">
+<aside class="side">
+  <div class="logo"><div class="logoMark">CI</div><div><b>ChurnIQ</b><small>AI RETENTION LAB</small></div></div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard"><span>⌂</span>Overview</button>
+    <button data-page="predict"><span>✦</span>Predict Churn</button>
+    <button data-page="customers"><span>♙</span>Customers</button>
+    <button data-page="analytics"><span>◔</span>Analytics</button>
+    <button data-page="models"><span>◈</span>Model Lab</button>
+    <button data-page="copilot"><span>✧</span>AI Copilot</button>
+  </nav>
+  <div class="ai-mini"><div class="ai-dot">✧</div><b>ChurnAI online</b><p>Ask questions about churn risk, customers, models and retention insights.</p><div class="online"><i></i> Ready to assist</div></div>
+  <div class="profile"><div class="avatar">VS</div><div><b>Vaishnavi S.</b><small>Data Analyst</small></div></div>
+</aside>
+
+<main class="main">
+<header class="top"><div><div class="crumb">CUSTOMER INTELLIGENCE / AI WORKSPACE</div><h1 id="title">Welcome back, Vaishnavi ✦</h1><p id="subtitle">A visual command center for predicting customer churn and planning retention.</p></div><div class="topActions"><div class="search">⌕ <input id="globalSearch" placeholder="Search customers..."></div><button class="btn teal" id="goAI">✧ Ask ChurnAI</button></div></header>
+
+<div class="dark-strip" style="background:#18363A;color:#EAF7F4;border-radius:14px;padding:11px 16px;margin:-7px 0 16px;display:flex;justify-content:space-between;align-items:center;font-size:9px;box-shadow:0 10px 24px rgba(24,54,58,.10)">
+<span>✦ <b>ChurnIQ Intelligence Engine</b> · Live demo workspace</span><span style="color:#BFE6DE">● Model ready</span>
+</div><section id="dashboard" class="page active">
+<div class="hero"><div class="welcome"><div class="tag">AI-POWERED RETENTION</div><h2>Know who may leave before they do.</h2><p>Explore churn patterns, compare classification models, and turn predictions into customer-retention actions.</p><button class="btn white" id="heroPredict">Run a prediction →</button></div>
+<div class="quick"><h3>Quick actions</h3><div class="quickGrid"><button data-page="predict">✦ Predict a customer</button><button data-page="copilot">✧ Ask ChurnAI</button><button data-page="customers">♙ Review high risk</button><button data-page="models">◈ Compare models</button></div></div></div>
+<div class="metrics"><div class="metric"><label>CUSTOMERS ANALYZED</label><strong>7,043</strong><small>+8.4% this month</small></div><div class="metric"><label>HIGH CHURN RISK</label><strong>1,866</strong><small>26.5% of customers</small></div><div class="metric"><label>RETENTION VALUE</label><strong>₹42.8L</strong><small>estimated monthly value</small></div><div class="metric"><label>MODEL ACCURACY</label><strong>86.7%</strong><small>validation snapshot</small></div></div>
+<div class="grid"><div class="card"><div class="head"><div><h3>Churn probability trend</h3><p>Illustrative monthly trend for the dashboard.</p></div><select class="select"><option>Last 6 months</option><option>Last year</option></select></div><div class="chart"><svg viewBox="0 0 650 210" preserveAspectRatio="none"><g stroke="#e8eeee"><path d="M40 25H635M40 75H635M40 125H635M40 175H635"/></g><polyline fill="none" stroke="#4f9891" stroke-width="4" points="40,145 155,125 270,137 385,86 500,98 635,62"/><g fill="#4f9891"><circle cx="40" cy="145" r="5"/><circle cx="155" cy="125" r="5"/><circle cx="270" cy="137" r="5"/><circle cx="385" cy="86" r="5"/><circle cx="500" cy="98" r="5"/><circle cx="635" cy="62" r="5"/></g><g fill="#9ba6aa" font-size="10"><text x="32" y="199">Apr</text><text x="147" y="199">May</text><text x="262" y="199">Jun</text><text x="377" y="199">Jul</text><text x="492" y="199">Aug</text><text x="625" y="199">Sep</text></g></svg></div><div class="legend"><i></i> Predicted churn rate</div></div>
+<div class="card insight"><div class="head"><div><h3>Model health</h3><p>Current evaluation snapshot.</p></div><span class="pill low">READY</span></div><div class="score"><div class="circle"><b>86.7%</b></div><div class="scoreText"><b>Classification accuracy</b><p>XGBoost is shown as the selected model in this demo workspace.</p></div></div><div class="factor"><div class="factorRow">Month-to-month contract <div class="factorBar"><span style="width:91%"></span></div></div><div class="factorRow">Tenure <div class="factorBar"><span style="width:77%"></span></div></div><div class="factorRow">Monthly charges <div class="factorBar"><span style="width:69%"></span></div></div></div></div></div>
+<div class="card tableCard"><div class="head"><div><h3>Priority customers</h3><p>Customers with higher illustrative churn probabilities.</p></div><button class="btn white" data-page="customers">View customer hub →</button></div><div class="tableWrap"><table><thead><tr><th>Customer</th><th>Contract</th><th>Monthly</th><th>Probability</th><th>Risk</th><th></th></tr></thead><tbody id="priority"></tbody></table></div></div>
+</section>
+
+<section id="predict" class="page"><div class="section"><div><div class="crumb">PREDICTION ENGINE</div><h2>Predict customer churn</h2><p>Enter attributes to generate an interactive demo risk assessment.</p></div></div><div class="card formCard"><div class="form"><label>Tenure (months)<input id="tenure" type="number" min="0" max="120" value="8"></label><label>Monthly charges (₹)<input id="charges" type="number" min="0" value="2500"></label><label>Contract<select id="contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></label><label>Internet service<select id="internet"><option>Fiber optic</option><option>DSL</option><option>No</option></select></label><label>Support calls<input id="support" type="number" min="0" max="20" value="3"></label><label>Payment method<select id="payment"><option>Electronic check</option><option>Credit card</option><option>Bank transfer</option><option>Mailed check</option></select></label></div><div style="text-align:right;margin-top:18px"><button class="btn teal" id="runPrediction">Run AI-style prediction ✦</button></div></div><div id="predictionResult"></div></section>
+
+<section id="customers" class="page"><div class="section"><div><div class="crumb">CUSTOMER HUB</div><h2>Customer profiles</h2><p>Explore predicted churn probability and risk category.</p></div><button class="btn white" id="export">↓ Export CSV</button></div><div class="filters" style="display:flex;gap:8px;margin-bottom:14px"><input id="custSearch" placeholder="Search name or ID..." style="padding:10px;border:1px solid var(--line);border-radius:11px;outline:0;font-size:9px;width:240px"><select id="riskFilter" class="select"><option value="all">All risk levels</option><option>High</option><option>Medium</option><option>Low</option></select></div><div class="customers" id="customerGrid"></div></section>
+
+<section id="analytics" class="page"><div class="section"><div><div class="crumb">EXPLORATORY ANALYSIS</div><h2>Analytics studio</h2><p>Visual signals from the churn analysis workflow.</p></div></div><div class="metrics"><div class="metric"><label>PRECISION</label><strong>79.8%</strong><small>illustrative evaluation</small></div><div class="metric"><label>RECALL</label><strong>82.4%</strong><small>illustrative evaluation</small></div><div class="metric"><label>F1-SCORE</label><strong>82.2%</strong><small>illustrative evaluation</small></div><div class="metric"><label>ROC-AUC</label><strong>0.91</strong><small>illustrative evaluation</small></div></div><div class="card"><div class="head"><div><h3>Key churn factors</h3><p>Feature-importance style visualization for the interface.</p></div></div><div style="margin-top:20px;display:grid;gap:17px"><div class="factorRow">Month-to-month contract <b style="float:right">91%</b><div class="factorBar"><span style="width:91%"></span></div></div><div class="factorRow">Tenure <b style="float:right">77%</b><div class="factorBar"><span style="width:77%"></span></div></div><div class="factorRow">Monthly charges <b style="float:right">69%</b><div class="factorBar"><span style="width:69%"></span></div></div><div class="factorRow">Internet service <b style="float:right">62%</b><div class="factorBar"><span style="width:62%"></span></div></div></div></div></section>
+
+<section id="models" class="page"><div class="section"><div><div class="crumb">MODEL LAB</div><h2>Classification model lab</h2><p>Compare the algorithms specified in your project abstract.</p></div></div><div class="card tableCard"><div class="tableWrap"><table class="modelTable"><thead><tr><th>Algorithm</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC-AUC</th></tr></thead><tbody><tr><td>Logistic Regression</td><td>80.4%</td><td>76.2%</td><td>75.8%</td><td>76.0%</td><td>.84</td></tr><tr><td>Decision Tree</td><td>78.9%</td><td>72.5%</td><td>74.1%</td><td>73.3%</td><td>.81</td></tr><tr><td>Random Forest</td><td>84.8%</td><td>79.1%</td><td>80.3%</td><td>79.7%</td><td>.89</td></tr><tr><td>SVM</td><td>82.7%</td><td>78.0%</td><td>77.4%</td><td>77.7%</td><td>.87</td></tr><tr><td>KNN</td><td>79.6%</td><td>74.3%</td><td>73.8%</td><td>74.0%</td><td>.82</td></tr><tr><td><b>XGBoost</b></td><td><span class="pill low">86.7%</span></td><td>82.1%</td><td>82.4%</td><td>82.2%</td><td>.91</td></tr></tbody></table></div></div></section>
+
+<section id="copilot" class="page"><div class="section"><div><div class="crumb">CHURNIQ INTELLIGENCE</div><h2>AI Copilot</h2><p>Ask questions about the dashboard and receive contextual project insights.</p></div></div><div class="chatLayout"><div class="card chat"><div class="chatHead"><div class="bot">✧</div><div><b>ChurnAI Copilot</b><small>● Online · Customer retention assistant</small></div></div><div class="messages" id="messages"><div class="msg botMsg">Hi Vaishnavi! 👋 I'm <b>ChurnAI</b>. I can explain churn risk, model metrics, customer patterns, or help you understand the prediction workflow. What would you like to know?</div></div><div class="suggestions"><button data-q="What is churn?">What is churn?</button><button data-q="Which model is selected?">Selected model?</button><button data-q="What factors increase churn?">Key churn factors</button><button data-q="Explain the prediction">Explain prediction</button></div><div class="chatInput"><input id="chatInput" placeholder="Ask ChurnAI something..."><button id="send">➤</button></div></div><div class="sideInfo"><div class="card"><h3>AI context</h3><p>ChurnAI is connected to the demo dashboard data and can answer questions about:</p><ul><li>Churn probability</li><li>Customer risk categories</li><li>Classification models</li><li>Evaluation metrics</li><li>Project workflow</li></ul></div><div class="card" style="background:#edf7f4"><h3>Project workflow</h3><p>Data collection → preprocessing → EDA → model training → evaluation → churn prediction → retention action.</p></div></div></div></section>
+</main></div>
+<div class="modalbg" id="modal"><div class="modal"><button class="close" id="close">×</button><div class="crumb">CUSTOMER INSIGHT</div><h2 id="modalTitle">Customer</h2><p id="modalText"></p><div style="text-align:right"><button class="btn teal" id="modalBtn">Ask ChurnAI about this</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const customers=[
+["CUS-1042","Ananya Rao","Month-to-month","₹2,850",91,"High"],["CUS-0918","Riya Mehta","Month-to-month","₹2,410",87,"High"],["CUS-1187","Arjun Kumar","One year","₹1,840",68,"Medium"],["CUS-0771","Sneha Patel","Two year","₹1,520",23,"Low"],["CUS-1302","Karthik N.","Month-to-month","₹2,990",74,"Medium"],["CUS-0644","Meera Shah","Month-to-month","₹3,200",83,"High"],["CUS-1021","Rahul Verma","One year","₹1,900",52,"Medium"],["CUS-0888","Pooja Singh","Two year","₹1,350",18,"Low"],["CUS-1430","Nikhil Reddy","Month-to-month","₹2,670",79,"Medium"]];
+const $=s=>document.querySelector(s), pill=r=>`<span class="pill ${r.toLowerCase()}">${r}</span>`;
+const titles={dashboard:["Welcome back, Vaishnavi ✦","A visual command center for predicting customer churn and planning retention."],predict:["Predict customer churn","Enter attributes to generate an interactive demo risk assessment."],customers:["Customer profiles","Explore predicted churn probability and risk category."],analytics:["Analytics studio","Visual signals from the churn analysis workflow."],models:["Classification model lab","Compare the algorithms specified in your project abstract."],copilot:["AI Copilot","Ask questions about the dashboard and receive contextual project insights."]};
+function showPage(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$("#"+id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===id));$("#title").textContent=titles[id][0];$("#subtitle").textContent=titles[id][1];if(id==="customers")renderCustomers()}
+function renderPriority(){$("#priority").innerHTML=customers.filter(c=>c[4]>=74).slice(0,5).map(c=>`<tr><td><b>${c[1]}</b><div style="font-size:7px;color:#a0aaad">${c[0]}</div></td><td>${c[2]}</td><td>${c[3]}</td><td><b>${c[4]}%</b></td><td>${pill(c[5])}</td><td><button class="btn white view" data-id="${c[0]}">View</button></td></tr>`).join("")}
+function renderCustomers(){let q=($("#custSearch").value||"").toLowerCase(),r=$("#riskFilter").value;$("#customerGrid").innerHTML=customers.filter(c=>(!q||(c[0]+c[1]).toLowerCase().includes(q))&&(r==="all"||c[5]===r)).map(c=>`<div class="customer"><div class="customerTop"><div class="avatar2">${c[1].split(" ").map(x=>x[0]).join("").slice(0,2)}</div><div><h4>${c[1]}</h4><small>${c[0]}</small></div></div><hr><div class="customerFoot"><span>Contract<b>${c[2]}</b></span><span>Monthly<b>${c[3]}</b></span><span>Risk<b>${pill(c[5])}</b></span></div><div style="margin-top:15px;font-size:8px;color:#8b969a">Churn probability <b style="float:right;color:#4e5b60">${c[4]}%</b><div class="factorBar"><span style="width:${c[4]}%"></span></div></div></div>`).join("")}
+function toast(s){let t=$("#toast");t.textContent="✓  "+s;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function runPrediction(){let ten=Math.max(0,+$("#tenure").value||0),charges=Math.max(0,+$("#charges").value||0),support=Math.max(0,+$("#support").value||0),contract=$("#contract").value,score=Math.min(97,Math.max(5,50+(ten<12?18:0)+(charges>2500?12:0)+(contract==="Month-to-month"?15:0)+(support>=3?8:0))),risk=score>=75?"High":score>=50?"Medium":"Low";$("#predictionResult").innerHTML=`<div class="result" style="background:${risk==="High"?"var(--coral)":risk==="Medium"?"var(--gold)":"var(--aqua)"}><div class="crumb">PREDICTION COMPLETE</div><h2 style="margin:6px 0;font-size:21px">${risk} churn risk · ${score}%</h2><p style="font-size:9px;color:#68757a">The demo assessment uses the entered tenure, charges, contract and support signals. For a real deployment, connect this form to your trained ML model.</p><button class="btn teal" id="askResult">Ask ChurnAI to explain</button></div>`;$("#askResult").onclick=()=>{showPage("copilot");addMsg("Explain my latest prediction","user");addBot(`Your latest demo prediction is <b>${risk} risk (${score}%)</b>. The score increased because of the current customer attributes. In a production system, the trained model would generate this probability from the learned feature patterns.`)};toast("Churn prediction completed.")}
+function addMsg(text,type){let d=document.createElement("div");d.className="msg "+(type==="user"?"userMsg":"botMsg");d.innerHTML=text;$("#messages").appendChild(d);$("#messages").scrollTop=$("#messages").scrollHeight}
+function addBot(text){setTimeout(()=>addMsg(text,"bot"),180)}
+function botAnswer(q){let x=q.toLowerCase();if(x.includes("what is churn"))return"Customer churn means a customer stops using a service or leaves a business. The project predicts which customers are likely to churn so organizations can take proactive retention measures.";if(x.includes("model")||x.includes("xgboost"))return"The project abstract lists Logistic Regression, Decision Tree, Random Forest, SVM, KNN and XGBoost. This demo dashboard displays XGBoost with a 86.7% accuracy snapshot and 0.91 ROC-AUC.";if(x.includes("factor")||x.includes("increase"))return"The dashboard highlights month-to-month contract, tenure, monthly charges and internet service as important illustrative churn factors. These are dashboard examples; actual feature importance should come from the trained model.";if(x.includes("metric")||x.includes("accuracy")||x.includes("recall"))return"Model evaluation in the abstract uses Accuracy, Precision, Recall, F1-Score and ROC-AUC. These metrics help compare classification performance from different perspectives.";if(x.includes("prediction")||x.includes("workflow"))return"The project workflow is data collection → preprocessing (missing values, encoding and scaling) → EDA → model training → evaluation → selecting a model → predicting churn → using insights for retention.";if(x.includes("high risk"))return"The demo customer hub marks customers with higher predicted probabilities as High risk. Open the Customer Hub to inspect individual profiles.";return"I can help with churn definitions, preprocessing, EDA, model comparison, evaluation metrics, customer risk, and the project workflow. Try asking: “Which model is selected?” or “What factors increase churn?”"}
+function sendChat(q){if(!q.trim())return;addMsg(q,"user");addBot(botAnswer(q))}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+$("#heroPredict").onclick=()=>showPage("predict");$("#goAI").onclick=()=>showPage("copilot");$("#runPrediction").onclick=runPrediction;
+$("#custSearch").oninput=renderCustomers;$("#riskFilter").onchange=renderCustomers;
+$("#globalSearch").oninput=e=>{if(e.target.value.trim()){showPage("customers");$("#custSearch").value=e.target.value;renderCustomers()}};
+$("#send").onclick=()=>{let v=$("#chatInput").value;$("#chatInput").value="";sendChat(v)};$("#chatInput").onkeydown=e=>{if(e.key==="Enter")$("#send").click()};document.querySelectorAll(".suggestions button").forEach(b=>b.onclick=()=>sendChat(b.dataset.q));
+document.addEventListener("click",e=>{if(e.target.classList.contains("view")){let c=customers.find(x=>x[0]===e.target.dataset.id);$("#modalTitle").textContent=c[1];$("#modalText").innerHTML=`Customer ID: <b>${c[0]}</b><br>Contract: <b>${c[2]}</b><br>Monthly charges: <b>${c[3]}</b><br>Predicted churn probability: <b>${c[4]}%</b><br>Risk category: <b>${c[5]}</b>`;$("#modal").classList.add("show");$("#modalBtn").onclick=()=>{modal.classList.remove("show");showPage("copilot");addMsg(`Tell me about ${c[1]} (${c[4]}% churn probability).`,"user");addBot(`${c[1]} is currently classified as <b>${c[5]} risk</b> with a demo churn probability of <b>${c[4]}%</b>. Their contract is <b>${c[2]}</b> and monthly charges are <b>${c[3]}</b>. In a production workflow, the retention team could use the model explanation and customer history to decide an appropriate intervention.`)}}});
+$("#close").onclick=()=>$("#modal").classList.remove("show");
+$("#export").onclick=()=>{let csv="Customer ID,Name,Contract,Monthly Charges,Churn Probability,Risk\n"+customers.map(c=>c.join(",")).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="churn-customers.csv";a.click();toast("Customer CSV exported.")};
+renderPriority();renderCustomers();
+</script>
+</body></html>
